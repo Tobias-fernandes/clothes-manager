@@ -1,0 +1,45 @@
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  pageExtensions: ["ts", "tsx", "md", "mdx"],
+
+  reactCompiler: true,
+  poweredByHeader: false,
+  compress: true,
+
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+
+  typedRoutes: true,
+  experimental: {
+    typedEnv: true,
+    authInterrupts: true,
+    mdxRs: true,
+  },
+
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+import createMDX from "@next/mdx";
+
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+});
+
+export default withMDX(nextConfig);
